@@ -38,17 +38,14 @@ For case 1 we will use:
 
 For this we just need to calculate the IQR (interquartile range) of our historic data, and compare each reading to this value. All those readings that are **higher** than this will be considered outliers. All those values will be replaced by the median of the distribution. Here is the code to achieve it:
 
-"""
+``` python
 def detect_outliers(column: pd.DataFrame):
         """
         Detects outliers in a single-column dataframe, based on the 1.5*IQR method
-
         Args:
             column (pd.dataframe): Single-column dataframe to be used
-
         Returns:
             Single-column dataframe with the collection of outliers found
-
         """
 
         if column.empty:
@@ -67,4 +64,7 @@ def detect_outliers(column: pd.DataFrame):
 
         #Return a dataset with outliers only
         return column.loc[column[column.columns[0]] >= upper_bound]
-"""
+```
+
+For case 2 we use a different method. Since what we want to remove are the effects caused by bank holidays (lower contacts than usual) we forecast what would have been a "normal" day and then use that forecast to substitute the abnormally low value:
+
