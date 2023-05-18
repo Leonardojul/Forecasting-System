@@ -22,4 +22,4 @@ The Forecasting System is a series of processes and subprocesses that:
 
 The following flowchart summarizes the building blocks of the system:
 
-![Flowchart](https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/FC-System.png)
+![Flowchart]([https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/FC-System.png](https://github.com/Leonardojul/Forecasting-System/blob/0db5dc215617f06e1118b69301ebbc3237688c7e/FC_System.png))
