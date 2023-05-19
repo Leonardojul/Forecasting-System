@@ -25,7 +25,7 @@ The Forecasting System is a series of processes and subprocesses that:
 
 The following flowchart summarizes the building blocks of the system:
 
-<img src ="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/FC_System.png" width="50%" height="50%">
+<img src ="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/FC_System.png" width="100%" height="100%">
 
 ### Data collection
 
@@ -91,11 +91,11 @@ def detect_outliers(column: pd.DataFrame):
 
 For case 2 we use a different method. Since what we want to remove are the effects caused by bank holidays (lower contacts than usual) we forecast what would have been a "normal" day and then use that forecast to substitute the abnormally low value:
 
-<img src="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/holiday-graph-example.jpg" width="50%" height="50%">
+<img src="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/holiday-graph-example.jpg" width="100%" height="100%">
 
 As we can see, on the third Wednesday of this time series we got an abnormally low number of contacts. Since we know this was a bank holiday, we can "forecast the past" to find out what would have happened should there had not been a bank holiday on that Wednesday. We will then use the "forecasted" value to imputate the data for a more realistic time-series and avoid carrying over this effect into our forecast:
 
-<img src="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/holiday-graph-corrected.jpg" width="50%" height="50%">
+<img src="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/holiday-graph-corrected.jpg" width="100%" height="100%">
 
 ### Hyperparameter selection and forecasting
 
