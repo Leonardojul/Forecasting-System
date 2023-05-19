@@ -6,10 +6,11 @@ As a workforce manager it is crucial to know in advance what the staffing demand
 
 **INDEX**
 1. [How does it work?](#how-does-it-work)
-  - [Pre-processing](#pre-processing)
-  - [Hyperparameter selection and forecasting](#Hyperparameter-selection-and-forecasting)
-  - [Post-processing](#post-processing)
-2. [Ticket bottleneck analysis](#ticket-bottleneck-analysis)
+    - [Data collection](#data-collection)
+    - [Pre-processing](#pre-processing)
+    - [Hyperparameter selection and forecasting](#hyperparameter-selection-and-forecasting)
+    - [Post-processing](#post-processing)
+2. [Delivery and reporting](#delivery-and-reporting)
 
 
 ### How does it work?
@@ -24,6 +25,27 @@ The Forecasting System is a series of processes and subprocesses that:
 The following flowchart summarizes the building blocks of the system:
 
 <img src ="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/FC_System.png" width="50%" height="50%">
+
+### Data collection
+
+In an ideal scenario, all the data we need four our data science project would be directly ready for us to use. As many times, this was not the case for us and the channels and languages we needed to forecast come from different places, requiring different methods and integrations to get each one of them.
+
+For security reasons I will not be sharing the speecifics of how this data was retrieved, but suffice to say that it was distributed between:
+1. An internal SQL server database
+2. An Azure storage account (where there is an excel file from which we retrieve the data)
+3. A custom thir-party API
+
+The packages used for these three processes were:
+``` python
+import pyodbc
+from azure.identity import DefaultAzureCredential, AzureCliCredential
+```
+``` python
+from azure.storage.blob import BlobServiceClient, __version__
+```
+``` python
+import requests
+```
 
 ### Pre-processing
 
@@ -176,4 +198,11 @@ We will also make sure that any holidays or weekends in which our contact centre
 
 
     return prediction
-    ```
+```
+### Delivery and reporting
+
+Once our historical data and forecasts are safely stored in our SQL database, it is time to make sure that the different business units within the organization can make use of this data.
+
+The most straightforward way to share the data among non-extremely tech savvy professionals is to create a Power BI dataset, which can be easely used from any other applications than Power BI like the widely used MS Excel.
+
+In the case of a Power BI dashboard, it is important to provide the end users with controls and slicers that make their lives easier in using and understanding the data, which will also have an impact on the amout of value they can extract from it. Consider this: an end user looking at some predictions made by a fancy technologic algorithm will have the feeling of peeking into the future. They will want to look further in time, but also check how well the system performed in the past. They will also play with the controls to find out whether their assumptions are right or if the system "agrees' with them on what the future awaits. And this is just the surface, this data will be used to take important decisions like granting time off, scheduling more agents on a given channel or even hiring.
