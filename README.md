@@ -11,6 +11,7 @@ As a workforce manager it is crucial to know in advance what the staffing demand
     - [Hyperparameter selection and forecasting](#hyperparameter-selection-and-forecasting)
     - [Post-processing](#post-processing)
 2. [Delivery and reporting](#delivery-and-reporting)
+3. [Conclussion](#conclussion)
 
 
 ### How does it work?
@@ -214,3 +215,21 @@ On the main page of our dashboard we can see a time-series with a daily granular
 <img src="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/FC-dashboard3.png" width="75%" height="75%">
 
 The second screenshot shows a similar page, but in this case, aggregated weekly. Not all business units require the same level of detail for their operation and weekly or monthly results are more useful for evaluating both the system and the efficency of the contact centre. In this case we can also see a custom tooltip we built to give more clarity on the data displayed. This specific example shows how in week 17 an abnormally high volume of phone calls was received. This, of course, could not have been forecasted as it was the result of an unforseen issue. For the sake of our own peace of mind and that of our stakeholders, we can add information to this visualization that helps clarify the anomaly. In this case a mistake from another department explains the deviation from the forecasted values.
+
+<img src="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/FC-dashboard2.png" width="75%" height="75%">
+
+Finally, and among other pages I will not be showcasing in this document, we need to clearly show our models' performance, which translates directly into how much it can be trusted. The choice of the right metric(s) is crucial in this case as it has to be both useful from a technical standpoint, as well as easy to understand to everybody. Measures such as RMSE, although useful and perhaps more scientific, are not easy to read, understand or explain to all stakeholders. For this reason we have chosen to implement the mean absolute percentage error (MAPE):
+
+![](https://latex.codecogs.com/png.image?\dpi{110}&space;\bg_white&space;M.A.P.E&space;=&space;\frac{1}{n}\sum_{t&space;=&space;1}^{n}\left&#124;1-\frac{Ft}{At}&space;\right&#124;)
+
+Along with the mean percentage error (MPE):
+
+![](https://latex.codecogs.com/png.image?\dpi{110}&space;\bg_white&space;M.P.E&space;=&space;\frac{1}{n}\sum_{t&space;=&space;1}^{n}\1-\frac{Ft}{At}&space;)
+
+Where Ft are our forecasted values and At are our actual values.
+
+MAPE is easy to understand as it is nothing but an aggregation of all the errors in a correlection of forecasted and actual value pairs. It is useful to check whether the forecast is within the 10% error target. MPE, on the other hand, helps us complete the story by showing whether our errors are skewed in one direction and, if so, where.
+
+### Conclussion
+
+The above project has been designed and implemented over time, using different technologies and systems to tailor it to very specific needs and to what was possible within an organization. Every forecasting tool will have its own particularities and challenges, and that is the reason why it is important to be flexible during both the design and implementation phase. Listening to your stakeholders and making the most out of the tools and infrastructure available should be the priorities of any respectable data scientist.
