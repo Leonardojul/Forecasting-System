@@ -7,9 +7,9 @@ As a workforce manager it is crucial to know in advance what the staffing demand
 **INDEX**
 1. [How does it work?](#how-does-it-work)
   - [Pre-processing](#pre-processing)
+  - [Hyperparameter selection and forecasting](#Hyperparameter-selection-and-forecasting)
+  - [Post-processing](#post-processing)
 2. [Ticket bottleneck analysis](#ticket-bottleneck-analysis)
-3. [Ticket categorization](#ticket-categorization)
-4. [Conclussions and recommendations](#conclussions-and-recommendations)
 
 
 ### How does it work?
@@ -70,8 +70,110 @@ For case 2 we use a different method. Since what we want to remove are the effec
 
 <img src="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/holiday-graph-example.jpg" width="50%" height="50%">
 
-As we can see, on the third Wednesday of this time series we got an abnormally low number of contacts. Since we know this was a bank holiday, we can "forecast the past" to find out what would have happened should there had not been a bank holiday on that Wednesday. We will then use the "forecasted" value to imputate the data for a more realistic time-series and avoide carrying over this effect into our forecast:
+As we can see, on the third Wednesday of this time series we got an abnormally low number of contacts. Since we know this was a bank holiday, we can "forecast the past" to find out what would have happened should there had not been a bank holiday on that Wednesday. We will then use the "forecasted" value to imputate the data for a more realistic time-series and avoid carrying over this effect into our forecast:
 
 <img src="https://raw.githubusercontent.com/Leonardojul/Forecasting-System/main/holiday-graph-corrected.jpg" width="50%" height="50%">
 
+### Hyperparameter selection and forecasting
 
+After our data is clear from any undesired effects that could pollute our forecasts it is time to fit a model and forecast. A question often asked in this regard is what is the besst set of hyperparameters to fit our model with. The statsmodels package in Python provides an automatic way to finding these out, which is the function auto_arima. Since we wanted to implement our own testing criteria, we decided to create our own auto s-arima function:
+
+``` python
+import pandas as pd
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+def auto_sarimax(oc_train: pd.DataFrame, p: int = 3, 
+                 q: int = 3, P: int = 3, Q:int = 3):
+    """
+    Runs a sarimax fitting for values from 0 to (parameter - 1) for p, q, P and Q, calculates AIC and BIC values for each
+    forecast and then saves the results to Test_results.csv. Accepts only single-column DataFranes. The number of tests
+    will be p*q*P*Q. By default these values are 3, therefore auto_sarimax will perform 81 different tests.
+
+    Args:
+        oc_train (pd.DataFrame): Single-column dataset to be analyzed.
+        p_arima (int): Autoregressive (AR) component of model expressed in order p
+        q_arima (int): Moving average (MA) component of model expressed in order q
+        P_arima (int): Seasonal autoregressive (SAR) component of model expressed in order P
+        Q_arima (int): Seasonal moving average (SMA) component of model expressed in order Q
+
+    Returns:
+        Test_results.csv
+
+    Example:
+
+        .. code-block:: python
+
+            import pandas as pd
+            test_data = {'Daily_volumes':[1,2,3,2,1,2,3,2,1,2,3,2,1,2,3,2,1,2,3,2,1,2,3]}
+            date_generated = pd.date_range(start='1/1/2022',end='1/23/2022')
+            test_dataframe = pd.DataFrame(test_data, index=date_generated)
+            auto_sarimax(test_dataframe)
+    """
+
+    # Create empty list to store search results
+    order_aic_bic=[]
+
+    # Loop over p values from 0-2
+    for p1 in range(p):
+    # Loop over q values from 0-2
+        for q1 in range(q):
+            # create and fit ARMA(p,q) model
+            for P1 in range(P):
+                for Q1 in range(Q):
+                    model = SARIMAX(oc_train, order=(p1,1,q1), seasonal_order=(P1,1,Q1,7), freq="D") 
+                    results = model.fit()  
+            # Append order and results tuple
+                    order_aic_bic.append((p1,q1,P1,Q1,results.aic, results.bic))
+                    print("Calculated with p= ", p1," q= ",  q1, " P= ", P1, " Q= ", Q1)
+
+    # Construct DataFrame from order_aic_bic
+    order_df = pd.DataFrame(order_aic_bic, 
+                            columns=['p','q','P','Q','AIC','BIC'])
+
+    order_df.to_csv(f'Test_results_{date.today()}.csv'
+```
+### Post-processing
+
+Once our forecast has been produced it is time to correct any undersired artifacts inherent to this forecasting method. One of them is the forecasting of negative values. In the specific context of a contact centre it does not make sense to have -100 calls in a day or -50 emails received. Usually extreme negative values in your forecast could indicate your are no correctly fitting your model, but small incursions into negative territory are just a normal effect of a model that takes into account the linear trend of your data.
+
+The first process to fix this will be to trim any negative values, which we can do with a single line of code:
+
+``` python
+  predictions[predictions < 0] = 0
+```
+
+We will also make sure that any holidays or weekends in which our contact centre is closed our predictions will be zero. For that we will take into account the weekday and the holiday calendar, which we can find using the holidays package:
+
+``` python
+ import holidays
+ def add_holidays(prediction: pd.DataFrame, country: str):
+    """
+    Zeroes any values that fall on holidays or weekends
+
+    Args:
+        prediction (pd.dataframe): Training dataset to be processed
+        country (str): International country code in upper case
+
+    Returns:
+        prediction (pd.dataframe): Processed prediction
+
+    Example:
+
+        .. code-block:: python
+
+            import pandas as pd
+            test_data = {'Daily_volumes':[1,2,3,2,1,2,3,2,1,2,3,2,1,2,3,2,1,2,3,2,1,2,3]}
+            date_generated = pd.date_range(start='4/8/2022',end='4/30/2022')
+            test_dataframe = pd.DataFrame(test_data, index=date_generated)
+            predict_X_plus_5(test_dataframe)
+    """
+    #Generate specific holidays calendar
+    holiday = holidays.country_holidays(country)
+
+    #Check whether there are any holidays or weekends in the generated prediction and zero those values
+    for index, i in prediction.iterrows():
+        if index in holiday or index.weekday() >= 5:
+            prediction.loc[index, prediction.columns[0]] = 0
+
+
+    return prediction
+    ```
