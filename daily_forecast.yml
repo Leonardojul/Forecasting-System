@@ -1,0 +1,73 @@
+hdc:
+  seamly:
+    server: 'https://analytics.seamly-app.com/analytics/v1/'
+    profiles: ['nl','nl_be','fr_lu','fr_be','fr_fr','es','en','de']
+  languages: ['NL','FR','ES','DE']
+  channels: ['Chat','Email','Phone','Social','Backoffice', 'App_support','Company_Fitness','Webshop_NXT_Level', 'Debtors','Warning_Banishment']
+  data_sources:
+    Chat: 
+      sources: ['DB','HDC']
+      languages: ['NL','FR','ES','DE']
+    Email: 
+      sources: ['DB']
+      languages: ['NL','FR','ES','DE']
+    Social: 
+      sources: ['DB']
+      languages: ['NL','FR','ES','DE']
+    Backoffice: 
+      sources: ['DB']
+      languages: ['NL','FR','ES','DE']
+    Phone: 
+      sources: ['DB']
+      languages: ['NL','FR','ES']
+    App_support: 
+      sources: ['DB']
+      languages: ['NL','FR','ES','DE']
+    Company_Fitness: 
+      sources: ['DB']
+      languages: ['NL']
+    Webshop_NXT_Level:
+      sources: ['DB']
+      languages: ['NL','FR','ES','DE']
+    Debtors: 
+      sources: ['DB']
+      languages: ['NL','FR','ES','DE']
+    Warning_Banishment:
+      sources: ['DB']
+      languages: ['NL','FR','ES','DE']
+  last_update:
+    date:
+    type:
+
+forecast:
+  storage:
+    server: 'bf-datascience-sql01.database.windows.net'
+    database: 'Burpees'
+    driver: 'ODBC Driver 17 for SQL Server'
+  type: 'daily'
+  languages: ['NL','FR','ES','DE']
+  channels: ['Chat','Email','Phone','Social','Backoffice', 'App_support','Company_Fitness', 'Webshop_NXT_Level','Debtors','Warning_Banishment']
+  data_sources:
+    Chat: 
+      languages: ['NL','FR','ES','DE']
+    Email: 
+      languages: ['NL','FR','ES','DE']
+    Social: 
+      languages: ['NL','FR','ES','DE']
+    Backoffice: 
+      languages: ['NL','FR','ES','DE']
+    Phone: 
+      languages: ['NL','FR','ES']
+    App_support: 
+      languages: ['NL','FR','ES','DE']
+    Company_Fitness:
+      languages: ['NL']
+    Webshop_NXT_Level:
+      languages: ['NL','FR','ES','DE']
+    Debtors: 
+      languages: ['NL','FR','ES','DE']
+    Warning_Banishment:
+      languages: ['NL', 'FR','ES','DE']
+  last_update:
+    date:
+    type:
